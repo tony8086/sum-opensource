@@ -37,13 +37,10 @@ AlsaStream::AlsaStream(const char * alsa_pcm, unsigned int rate)
 	, rate(rate)
 	, rrate(rate)
 	, total_frames_sent(0)
-	, buffer_time(40000)
-	, period_time(1000)
 	, resample(1)
 	, handle_tx(nullptr)
 	, handle_rx(nullptr)
 	, format(SND_PCM_FORMAT_S16_LE)
-	, buffer_size(0)
 	, period_size(0)
 	, hw_params(nullptr)
 	, sw_params(nullptr)
@@ -162,27 +159,13 @@ AlsaStream::set_hw_params(snd_pcm_t* handle)
 		return err;
 	}
 
-	unsigned int temp_buffer_time = buffer_time;
-	if((err = snd_pcm_hw_params_set_buffer_time_near(handle, hw_params, &temp_buffer_time, &dir)) < 0) {
-		return err;
-	}
-	unsigned int temp_period_time = period_time;
-	if((err = snd_pcm_hw_params_set_period_time_near(handle, hw_params, &temp_period_time, &dir)) < 0) {
+	if((err = snd_pcm_hw_params(handle, hw_params)) < 0) {
 		return err;
 	}
 
 	if((err = snd_pcm_hw_params_get_period_size(hw_params, &period_size, &dir)) < 0) {
 		return err;
 	}
-
-	if((err = snd_pcm_hw_params_get_buffer_size(hw_params, &buffer_size)) < 0) {
-		return err;
-	}
-
-	if((err = snd_pcm_hw_params(handle, hw_params)) < 0) {
-		return err;
-	}
-
 	return 0;
 }
 
@@ -195,13 +178,13 @@ AlsaStream::set_sw_params(snd_pcm_t *handle)
 		return err;
 	}
 
-	if((err = snd_pcm_sw_params_set_start_threshold(handle, sw_params, period_size)) < 0) {
-		return err;
-	}
+	// if((err = snd_pcm_sw_params_set_start_threshold(handle, sw_params, period_size)) < 0) {
+	// 	return err;
+	// }
 
-	if((err = snd_pcm_sw_params_set_avail_min(handle, sw_params, period_size/4)) < 0) {
-		return err;
-	}
+	// if((err = snd_pcm_sw_params_set_avail_min(handle, sw_params, period_size/4)) < 0) {
+	// 	return err;
+	// }
 
 	if((err = snd_pcm_sw_params(handle, sw_params)) < 0) {
 		return err;

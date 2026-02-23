@@ -139,10 +139,6 @@ private:
 
 	size_t total_frames_sent; /**< Total frames sent from the obj initialization.*/
 
-	unsigned int buffer_time; /**< Size of the ring buffer, expressed in us.*/
-
-	unsigned int period_time; /**< Size of a single PCM period, expressed in us.*/
-
 	int resample; /**< Enable ALSA resampling.*/
 
 	snd_pcm_t* handle_tx; /**< ALSA handle for transmission.*/
@@ -150,8 +146,6 @@ private:
 	snd_pcm_t* handle_rx; /**< ALSA handle for reception.*/
 
 	snd_pcm_format_t format; /**< Format used for a single sample.*/
-
-	snd_pcm_uframes_t buffer_size; /**< Size of the ring buffer, expressed in bits.*/
 
 	snd_pcm_uframes_t period_size; /**< Size of a single PCM period, expressed in us.*/
 
